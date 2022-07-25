@@ -1,0 +1,43 @@
+name: 'E-Extend'
+ 
+on:
+  #push:
+  schedule:
+    # UTC time (国内 UTC+8)
+     - cron: '32 1 * * 6'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    #runs-on: macos-latest
+    runs-on: macos-12
+    
+    steps:
+        - name: 'Checkout codes'
+          uses: actions/checkout@v2
+#         - name: 'Set up Python'
+#           uses: actions/setup-python@v2
+#           with:
+#             python-version: '3.9.10'
+        - name: 'Update Chrome'
+          run: |
+              brew reinstall --cask google-chrome
+
+        - name: 'Install requirements'
+          run: |
+            python3 -m pip install -r ./requirements.txt
+#            python3 -m pip install --upgrade pip
+        - name: 'Renew'
+          env:
+            EU_USER_ID: ${{ secrets.EU_USER_ID }}
+            EU_PASS_WD: ${{ secrets.EU_PASS_WD }}
+            CAPTCHA_USER_ID: ${{ secrets.CAPTCHA_USER_ID }}
+            CAPTCHA_APIKEY: ${{ secrets.CAPTCHA_APIKEY }}
+            MAILPARSER: ${{ secrets.MAILPARSER }}
+            BARK_KEY: ${{ secrets.BARK_KEY }}
+            TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+            TG_USER_ID: ${{ secrets.TG_USER_ID }}
+            
+          run: |
+            python3 ./main.py
